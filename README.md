@@ -2,6 +2,9 @@
 
 ## Running
 
-To run this project just run `docker-compose up` and then point your browser to http://localhost:8000
+To run this project just run `docker-compose up`
+This will start the Django backend at http://localhost:8000
+and the React frontend at http://localhost:3000/app
 
-After that, run `yarn start` inside `/app` and point your browser to http://localhost:3000
+If you want to run the backend with a different configuration have a look at the example
+in the Dockerfile: https://github.com/getsentry/demo-app-django-react/blob/main/Dockerfile#L4-L10
