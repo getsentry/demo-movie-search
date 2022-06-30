@@ -5,7 +5,7 @@ FROM node
 # docker build -t ds_frontend:v0 .
 #
 # Run:
-# docker run --rm -p 3000:3000 -it ds_frontend:v0 
+# docker run --rm -p 3000:3000 -it ds_frontend:v0
 #
 
 WORKDIR /app

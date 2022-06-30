@@ -7,21 +7,33 @@ import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import Show from "./Show";
 import Shows from "./Shows";
-import { createBrowserHistory } from 'history';
+import { createBrowserHistory } from "history";
 
 const history = createBrowserHistory();
 
 Sentry.init({
-  dsn: "https://4fa9b13665d74aa98c924d855fdddca0@o447951.ingest.sentry.io/6539773",
-  integrations: [new BrowserTracing({
-    tracingOrigins: ["localhost", "localhost:8000", "localhost:3000", /^\//],
-    routingInstrumentation: Sentry.reactRouterV6Instrumentation(history),
-  })],
-
-  // Set tracesSampleRate to 1.0 to capture 100%
-  // of transactions for performance monitoring.
-  // We recommend adjusting this value in production
+  dsn: process.env.REACT_APP_SENTRY_DSN,
+  integrations: [
+    new BrowserTracing({
+      tracingOrigins: ["localhost", /^\//],
+      routingInstrumentation: Sentry.reactRouterV6Instrumentation(history),
+    }),
+  ],
+  release: process.env.REACT_APP_SENTRY_RELEASE,
+  environment: process.env.REACT_APP_SENTRY_ENVIRONMENT,
   tracesSampleRate: 1.0,
+  debug: true,
+});
+
+// Just a random new user, each time the page is reloaded
+const userId = String(Math.floor(Math.random() * 1_000_000));
+const userNameNumber = String(Math.floor(Math.random() * 1_000_000));
+const userSegmentNumber = String(Math.floor(Math.random() * 1_000_000));
+
+Sentry.setUser({
+  id: userId,
+  username: `Some user (${userNameNumber})}`,
+  segment: `Some user (${userSegmentNumber})}`,
 });
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
