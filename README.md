@@ -2,7 +2,7 @@
 
 ## Running
 
-To run this project just run `docker-compose up`
+To run this project just run `docker-compose up --build`
 This will start the Django backend at http://localhost:8000
 and the React frontend at http://localhost:3000/app
 

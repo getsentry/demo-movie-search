@@ -1,23 +1,25 @@
-
 version: "3.7"
-services:
-    django:
-        image: django_backend:v0
-        restart: unless-stopped
-        build:
-            context: .
-            args:
-                DJANGO_DEBUG: "True"
-                SENTRY_DSN_BACKEND: $SENTRY_DSN_BACKEND
-        ports:
-            - "8000:8000"
 
-    react:
-        image: react_frontend:v0
-        environment:
-            - SENTRY_DSN_FRONTEND=${SENTRY_DSN_FRONTEND}
-        restart: unless-stopped
-        build:
-            context: ./app/
-        ports:
-            - "3000:3000"
+services:
+  django:
+    image: django_backend:v0
+    restart: unless-stopped
+    build:
+      context: .
+      args:
+        DJANGO_DEBUG: "True"
+        SENTRY_DSN_BACKEND: $SENTRY_DSN_BACKEND
+    ports:
+      - "8000:8000"
+
+  react:
+    image: react_frontend:v0
+    environment:
+      - REACT_APP_SENTRY_DSN=${SENTRY_DSN_FRONTEND}
+      - REACT_APP_SENTRY_RELEASE=${SENTRY_RELEASE_FRONTEND}
+      - REACT_APP_SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT_FRONTEND}
+    restart: unless-stopped
+    build:
+      context: ./app/
+    ports:
+      - "3000:3000"
