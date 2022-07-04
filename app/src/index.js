@@ -27,13 +27,12 @@ Sentry.init({
 
 // Just a random new user, each time the page is reloaded
 const userId = String(Math.floor(Math.random() * 1_000_000));
-const userNameNumber = String(Math.floor(Math.random() * 1_000_000));
 const userSegmentNumber = String(Math.floor(Math.random() * 1_000_000));
 
 Sentry.setUser({
   id: userId,
-  username: `Some user (${userNameNumber})}`,
-  segment: `Some user (${userSegmentNumber})}`,
+  username: `Some user (${userId})}`,
+  segment: `Some segment (${userSegmentNumber})}`,
 });
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
