@@ -12,15 +12,15 @@ import { createBrowserHistory } from "history";
 const history = createBrowserHistory();
 
 Sentry.init({
-  dsn: process.env.REACT_APP_SENTRY_DSN,
+  dsn: process.env.SENTRY_DSN_FRONTEND,
   integrations: [
     new BrowserTracing({
       tracingOrigins: ["localhost", /^\//],
       routingInstrumentation: Sentry.reactRouterV6Instrumentation(history),
     }),
   ],
-  release: process.env.REACT_APP_SENTRY_RELEASE,
-  environment: process.env.REACT_APP_SENTRY_ENVIRONMENT,
+  release: process.env.SENTRY_RELEASE_FRONTEND,
+  environment: process.env.SENTRY_ENVIRONMENT_FRONTEND,
   tracesSampleRate: 1.0,
   debug: true,
 });
