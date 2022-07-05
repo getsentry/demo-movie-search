@@ -11,10 +11,10 @@ import { createBrowserHistory } from "history";
 
 const history = createBrowserHistory();
 
-const sentryDsn = process.env.REACT_APP_SENTRY_DSN_FRONTEND;
-const sentryRelease = process.env.REACT_APP_SENTRY_RELEASE_FRONTEND || '0.0.1';
-const sentryEnvironment = process.env.REACT_APP_SENTRY_ENVIRONMENT_FRONTEND || 'dev';
-const sentryTracesSampleRate = parseFloat(process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE_FRONTEND || "1.0");
+const sentryDsn = process.env.REACT_APP_SENTRY_DSN;
+const sentryRelease = process.env.REACT_APP_SENTRY_RELEASE || '0.0.1';
+const sentryEnvironment = process.env.REACT_APP_SENTRY_ENVIRONMENT || 'dev';
+const sentryTracesSampleRate = parseFloat(process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE || "1.0");
 const sentryDebug = process.env.REACT_APP_SENTRY_DEBUG_FRONTEND || true;
 
 console.log("~~~~ sentryDsn: ", sentryDsn)

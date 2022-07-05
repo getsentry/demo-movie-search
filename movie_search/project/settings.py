@@ -149,12 +149,12 @@ REST_FRAMEWORK = {
 # Sentry
 import sentry_sdk
 
-sentry_dsn = os.getenv("SENTRY_DSN_BACKEND", None)
-sentry_release = os.getenv("SENTRY_RELEASE_BACKEND", None) or "0.0.1"
-sentry_environment = os.getenv("SENTRY_ENVIRONMENT_BACKEND", None) or "dev"
-sentry_traces_sample_rate = float(os.getenv("SENTRY_TRACES_SAMPLE_RATE_BACKEND", None) or "1.0")
-sentry_default_pii = os.getenv("SENTRY_SENTRY_DEFAULT_PII_BACKEND", None) or True
-sentry_debug = os.getenv("SENTRY_DEBUG_BACKEND", None) or True
+sentry_dsn = os.getenv("DJANGO_SENTRY_DSN", None)
+sentry_release = os.getenv("DJANGO_SENTRY_RELEASE", None) or "0.0.1"
+sentry_environment = os.getenv("DJANGO_SENTRY_ENVIRONMENT", None) or "dev"
+sentry_traces_sample_rate = float(os.getenv("DJANGO_SENTRY_TRACES_SAMPLE_RATE", None) or "1.0")
+sentry_default_pii = os.getenv("DJANGO_SENTRY_DEFAULT_PII", None) or True
+sentry_debug = os.getenv("DJANGO_SENTRY_DEFAULT_PII", None) or True
 
 logging.warn(f"~~~~ sentry_dsn: {sentry_dsn}")
 logging.warn(f"~~~~ sentry_release: {sentry_release}")
