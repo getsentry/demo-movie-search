@@ -28,7 +28,6 @@ SECRET_KEY = "django-insecure-ny_%o6*o(npqht@9oc%2hsxz6upvlwir)cuys5-)-at!7gfibw
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if os.getenv("DJANGO_DEBUG", "True") == "True" else False
-logging.warn(f"~~~~ DEBUG: {DEBUG}")
 
 ALLOWED_HOSTS = ["*"]
 
@@ -150,20 +149,25 @@ REST_FRAMEWORK = {
 # Sentry
 import sentry_sdk
 
+sentry_dsn = os.getenv("SENTRY_DSN_BACKEND", None)
+sentry_release = os.getenv("SENTRY_RELEASE_BACKEND", None) or "0.0.1"
+sentry_environment = os.getenv("SENTRY_ENVIRONMENT_BACKEND", None) or "dev"
+sentry_traces_sample_rate = float(os.getenv("SENTRY_TRACES_SAMPLE_RATE_BACKEND", None) or "1.0")
+sentry_default_pii = os.getenv("SENTRY_SENTRY_DEFAULT_PII_BACKEND", None) or True
+sentry_debug = os.getenv("SENTRY_DEBUG_BACKEND", None) or True
 
-logging.warn(f'~~~~ SENTRY_DSN_BACKEND: {os.getenv("SENTRY_DSN_BACKEND", None)}')
-logging.warn(
-    f'~~~~ SENTRY_TRACES_SAMPLE_RATE_BACKEND: {os.getenv("SENTRY_TRACES_SAMPLE_RATE_BACKEND", "1.0")}'
-)
+logging.warn(f"~~~~ sentry_dsn: {sentry_dsn}")
+logging.warn(f"~~~~ sentry_release: {sentry_release}")
+logging.warn(f"~~~~ sentry_environment: {sentry_environment}")
+logging.warn(f"~~~~ sentry_traces_sample_rate: {sentry_traces_sample_rate}")
+logging.warn(f"~~~~ sentry_default_pii: {sentry_default_pii}")
+logging.warn(f"~~~~ sentry_debug: {sentry_debug}")
 
 sentry_sdk.init(
-    dsn=os.getenv("SENTRY_DSN_BACKEND", None),
-    release=os.getenv("SENTRY_RELEASE_BACKEND", "0.0.0"),
-    environment=os.getenv("SENTRY_ENVIRONMENT_BACKEND", "local"),
-    debug=os.getenv("SENTRY_DEBUG_BACKEND", True),
-    send_default_pii=os.getenv("SENTRY_SENTRY_DEFAULT_PII_BACKEND", True),
-    # Set traces_sample_rate to 1.0 to capture 100%
-    # of transactions for performance monitoring.
-    # We recommend adjusting this value in production.
-    traces_sample_rate=float(os.getenv("SENTRY_TRACES_SAMPLE_RATE_BACKEND", "1.0")),
+    dsn=sentry_dsn,
+    release=sentry_release,
+    environment=sentry_environment,
+    traces_sample_rate=sentry_traces_sample_rate,
+    send_default_pii=sentry_default_pii,
+    debug=sentry_debug
 )

@@ -19,9 +19,9 @@ Sentry.init({
       routingInstrumentation: Sentry.reactRouterV6Instrumentation(history),
     }),
   ],
-  release: process.env.REACT_APP_SENTRY_RELEASE_FRONTEND,
-  environment: process.env.REACT_APP_SENTRY_ENVIRONMENT_FRONTEND,
-  tracesSampleRate: 1.0,
+  release: process.env.REACT_APP_SENTRY_RELEASE_FRONTEND || '0.0.1',
+  environment: process.env.REACT_APP_SENTRY_ENVIRONMENT_FRONTEND || 'dev',
+  tracesSampleRate: parseFloat(process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE_FRONTEND || "1.0"),
   debug: true,
 });
 
