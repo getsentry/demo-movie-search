@@ -3,8 +3,12 @@ django-cors-headers==3.13.0
 djangorestframework==3.13.1
 gunicorn==20.1.0
 
-sentry_sdk
-
 whitenoise==6.2.0  # serving static files
 
 ipdb  # debugging
+
+# production sentry sdk:
+#sentry_sdk
+
+# experimental baggage support:
+https://github.com/getsentry/sentry-python/archive/neel/baggage.zip
