@@ -11,18 +11,30 @@ import { createBrowserHistory } from "history";
 
 const history = createBrowserHistory();
 
+const sentryDsn = process.env.REACT_APP_SENTRY_DSN_FRONTEND;
+const sentryRelease = process.env.REACT_APP_SENTRY_RELEASE_FRONTEND || '0.0.1';
+const sentryEnvironment = process.env.REACT_APP_SENTRY_ENVIRONMENT_FRONTEND || 'dev';
+const sentryTracesSampleRate = parseFloat(process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE_FRONTEND || "1.0");
+const sentryDebug = process.env.REACT_APP_SENTRY_DEBUG_FRONTEND || true;
+
+console.log("~~~~ sentryDsn: ", sentryDsn)
+console.log("~~~~ sentryRelease: ", sentryRelease)
+console.log("~~~~ sentryEnvironment: ", sentryEnvironment)
+console.log("~~~~ sentryTracesSampleRate: ", sentryTracesSampleRate)
+console.log("~~~~ sentryDebug: ", sentryDebug)
+
 Sentry.init({
-  dsn: process.env.REACT_APP_SENTRY_DSN_FRONTEND,
+  dsn: sentryDsn,
   integrations: [
     new BrowserTracing({
       tracingOrigins: ["localhost", /^\//],
       routingInstrumentation: Sentry.reactRouterV6Instrumentation(history),
     }),
   ],
-  release: process.env.REACT_APP_SENTRY_RELEASE_FRONTEND || '0.0.1',
-  environment: process.env.REACT_APP_SENTRY_ENVIRONMENT_FRONTEND || 'dev',
-  tracesSampleRate: parseFloat(process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE_FRONTEND || "1.0"),
-  debug: true,
+  release: sentryRelease,
+  environment: sentryEnvironment,
+  tracesSampleRate: sentryTracesSampleRate,
+  debug: sentryDebug,
 });
 
 // Just a random new user, each time the page is reloaded
