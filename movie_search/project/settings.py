@@ -169,5 +169,7 @@ sentry_sdk.init(
     environment=sentry_environment,
     traces_sample_rate=sentry_traces_sample_rate,
     send_default_pii=sentry_default_pii,
-    debug=sentry_debug
+    debug=sentry_debug, 
+
+    attach_stacktrace=True,
 )
