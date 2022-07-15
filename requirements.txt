@@ -7,8 +7,4 @@ whitenoise==6.2.0  # serving static files
 
 ipdb  # debugging
 
-# production sentry sdk:
-#sentry_sdk
-
-# experimental baggage support:
-https://github.com/getsentry/sentry-python/archive/neel/baggage.zip
+sentry_sdk  # prodcution sentry SDK
