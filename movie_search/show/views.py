@@ -8,6 +8,8 @@ from rest_framework.response import Response
 from show.models import Show
 from show.serializers import ShowListSerializer, ShowSerializer
 
+from . import signals
+
 
 def index(request):
     bla = 1/0
@@ -41,3 +43,14 @@ class ShowViewSet(viewsets.ModelViewSet):
                 queryset = queryset.filter(search_filter)
 
             return queryset
+
+    def retrieve(self, request, *args, **kwargs):
+        """
+        Return a list of all users.
+        """
+        show = self.get_object()
+        serializer = ShowSerializer(show)
+
+        signals.show_viewed.send(sender=self.__class__)
+
+        return Response(serializer.data)

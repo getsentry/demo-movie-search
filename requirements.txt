@@ -7,4 +7,6 @@ whitenoise==6.2.0  # serving static files
 
 ipdb  # debugging
 
-sentry_sdk  # prodcution sentry SDK
+# sentry_sdk  # prodcution sentry SDK
+-e ../sentry-python/
+#-e /Users/antonpirker/tmp/sentry-python

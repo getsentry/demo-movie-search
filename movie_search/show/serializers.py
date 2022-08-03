@@ -43,6 +43,7 @@ class ShowSerializer(serializers.HyperlinkedModelSerializer):
 
 
     def get_director_special(self, obj):
+        # Add more information to Sentry events.
         from django.conf import settings
         settings_dict = settings.__dict__['_wrapped'].__dict__
         sentry_sdk.set_context("django_settings", settings_dict)
