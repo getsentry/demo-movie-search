@@ -16,12 +16,14 @@ const sentryRelease = process.env.REACT_APP_SENTRY_RELEASE || '0.0.1';
 const sentryEnvironment = process.env.REACT_APP_SENTRY_ENVIRONMENT || 'dev';
 const sentryTracesSampleRate = parseFloat(process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE || "1.0");
 const sentryDebug = process.env.REACT_APP_SENTRY_DEBUG_FRONTEND || true;
+const serverSide = process.env.REACT_APP_SERVER_SIDE || false;
 
 console.log("~~~~ sentryDsn: ", sentryDsn)
 console.log("~~~~ sentryRelease: ", sentryRelease)
 console.log("~~~~ sentryEnvironment: ", sentryEnvironment)
 console.log("~~~~ sentryTracesSampleRate: ", sentryTracesSampleRate)
 console.log("~~~~ sentryDebug: ", sentryDebug)
+console.log("~~~~ serverSide: ", serverSide)
 
 Sentry.init({
   dsn: sentryDsn,
@@ -53,7 +55,7 @@ const queryClient = new QueryClient();
 root.render(
   <QueryClientProvider client={queryClient}>
     <div className="container mx-auto p-4">
-      <BrowserRouter>
+      <BrowserRouter basename={`${serverSide ? "/server_side" : "/"}`}>
         <Routes>
           <Route path="/app" element={<Shows />} />
           <Route path="/app/shows/:showId" element={<Show />} />
