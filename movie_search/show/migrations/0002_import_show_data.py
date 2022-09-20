@@ -25,17 +25,17 @@ def load_show_data(apps, schema_editor):
         next(pokemon_reader)  # skip first row
         for row in pokemon_reader:
             Show.objects.create(
-                show_type=row[SHOW_TYPE],
-                title=row[TITLE],
-                director=row[DIRECTOR],
-                cast=row[CAST],
-                countries=row[COUNTRIES],
-                date_added=row[DATE_ADDED],
+                show_type=row[SHOW_TYPE][:200],
+                title=row[TITLE][:200],
+                director=row[DIRECTOR][:200],
+                cast=row[CAST][:200],
+                countries=row[COUNTRIES][:200],
+                date_added=row[DATE_ADDED][:200],
                 release_year=row[RELEASE_YEAR],
-                rating=row[RATING],
-                duration=row[DURATION],
-                categories=row[CATEGORIES],
-                description=row[DESCRIPTION],
+                rating=row[RATING][:200],
+                duration=row[DURATION][:200],
+                categories=row[CATEGORIES][:200],
+                description=row[DESCRIPTION][:200],
             )
 
 class Migration(migrations.Migration):
