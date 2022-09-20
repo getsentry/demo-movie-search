@@ -10,5 +10,8 @@ source .venv/bin/activate
 # Install (or update) requirements
 pip install -r requirements.txt
 
+# run migrations
+./manage.py migrate
+
 # run development server on localhost:8000
 ./manage.py runserver 0.0.0.0:8000

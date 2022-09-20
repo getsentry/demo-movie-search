@@ -9,6 +9,5 @@ ipdb  # debugging
 
 psycopg2
 
-sentry_sdk  # prodcution sentry SDK
-#-e ../sentry-python/
-#-e /Users/antonpirker/tmp/sentry-python
+#sentry_sdk  # prodcution sentry SDK
+-e ../sentry-python/  # sdk in a sibling folder to this project
