@@ -5,8 +5,8 @@ from django.shortcuts import get_object_or_404, render
 from rest_framework import viewsets
 from rest_framework.response import Response
 
-from show.models import Show
-from show.serializers import ShowListSerializer, ShowSerializer
+from show.models import Show, Person
+from show.serializers import ShowListSerializer, ShowSerializer, PersonSerializer
 
 from . import signals
 
@@ -39,6 +39,26 @@ class ShowAsyncView(View):
         return HttpResponse("Hello async world!")
 
 
+class PersonViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows persons to be viewed or edited.
+    """
+    serializer_class = PersonSerializer
+
+    def get_queryset(self):
+            """
+            This view should return a list of all Persons
+            containing the search string in name.
+            """
+            queryset = Person.objects.all()
+            q = self.request.query_params.get('q', None)
+            if q:
+                search_filter = \
+                    Q(name__icontains=q)
+                queryset = queryset.filter(search_filter)
+
+            return queryset
+
 class ShowViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows shows to be viewed or edited.
@@ -61,8 +81,8 @@ class ShowViewSet(viewsets.ModelViewSet):
             if q:
                 search_filter = \
                     Q(title__icontains=q) | \
-                    Q(director__icontains=q) | \
-                    Q(cast__icontains=q)
+                    Q(director__name__icontains=q) | \
+                    Q(cast__name__icontains=q)
                 queryset = queryset.filter(search_filter)
 
             return queryset
@@ -72,7 +92,7 @@ class ShowViewSet(viewsets.ModelViewSet):
         Return a list of all users.
         """
         show = self.get_object()
-        serializer = ShowSerializer(show)
+        serializer = ShowSerializer(show, context = {"request": self.request})
 
         signals.show_viewed.send(sender=self.__class__)
 

@@ -22,6 +22,7 @@ from project import views
 
 router = routers.DefaultRouter()
 router.register(r'shows', show_views.ShowViewSet, basename='shows')
+router.register(r'persons', show_views.PersonViewSet, basename='persons')
 
 
 def trigger_error(request):
