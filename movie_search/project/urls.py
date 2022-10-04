@@ -30,10 +30,11 @@ def trigger_error(request):
 
 urlpatterns = [
     path('', views.root),
+    path('server_side/app/', views.server_side),
     path('admin/', admin.site.urls),
     path('show/', include('show.urls')),
     path('api/', include(router.urls)),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')), 
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
     path('sentry-debug/', trigger_error),
 ]
