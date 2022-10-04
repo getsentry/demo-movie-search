@@ -22,6 +22,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:server_side": "rm -rf ../movie_search/static/* && react-scripts build && cp build/static/js/*.js ../movie_search/static/ && mv ../movie_search/static/main*.js ../movie_search/static/main.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -43,5 +44,8 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:8000"
+  "proxy": "http://localhost:8000",
+  "devDependencies": {
+    "webpack-cli": "^4.10.0"
+  }
 }
