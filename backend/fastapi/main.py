@@ -1,9 +1,10 @@
 import os
 import secrets
 
+import redis
 import sentry_sdk
 
-from fastapi import Depends, FastAPI, Form
+from fastapi import Depends, FastAPI, Form, Request
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi_pagination import add_pagination
 
@@ -21,7 +22,7 @@ sentry_sdk.init(
 app = FastAPI(debug=True)
 app.include_router(api.router)
 
-add_pagination(app) 
+add_pagination(app)
 
 
 @app.get("/")
@@ -76,15 +77,25 @@ async def members_only(member_id: int, username: str = Depends(_get_current_user
     return {"message": "Hello, you are not invited!"}
 
 
+class CounterMiddleware:
+    def __init__(self, app):
+        self.app = app
 
-# @app.middleware("http")
-# async def logging_middleware(request: Request, call_next):
-#     start_time = time.time()
-#     print(f'~~~~~~~ reading request body in logging_middleware')
+    async def __call__(self, scope, receive, send):
+        # only handle http requests
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
 
-#     import ipdb
-#     ipdb.set_trace()
-#     body = await request.body()
-#     print(body)
-#     response = await call_next(request)
-#     return response
+        path = scope.get("path")
+
+        async def count_hits(message):
+            if message["type"] == "http.response.start":
+                redis_client = redis.Redis(host='localhost', port=6379)
+                redis_client.incr(path)
+
+            await send(message)
+
+        await self.app(scope, receive, count_hits)
+
+app.add_middleware(CounterMiddleware)

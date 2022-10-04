@@ -18,8 +18,8 @@ class Show(Base):
     description = Column(String, index=False)
     release_year = Column(Integer)
 
-    director = relationship("Person", secondary = 'show_show_director')
-    cast = relationship("Person", secondary = 'show_show_cast')
+    director = relationship("Person", secondary = 'show_show_director', lazy='joined')
+    cast = relationship("Person", secondary = 'show_show_cast', lazy='joined')
 
 
 class Person(Base):
@@ -29,14 +29,14 @@ class Person(Base):
     name = Column(String, index=True)
 
 
-class Show_Director (Base):
+class Show_Director(Base):
     __tablename__ = 'show_show_director'
 
     show_id = Column (Integer, ForeignKey('show_show.id'), primary_key = True)
     person_id = Column (Integer, ForeignKey('show_person.id'), primary_key = True)
 
 
-class Show_Director (Base):
+class Show_Cast(Base):
     __tablename__ = 'show_show_cast'
 
     show_id = Column (Integer, ForeignKey('show_show.id'), primary_key = True)
