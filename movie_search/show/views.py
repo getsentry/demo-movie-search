@@ -83,7 +83,7 @@ class ShowViewSet(viewsets.ModelViewSet):
                     Q(title__icontains=q) | \
                     Q(director__name__icontains=q) | \
                     Q(cast__name__icontains=q)
-                queryset = queryset.filter(search_filter)
+                queryset = queryset.filter(search_filter).distinct()
 
             return queryset
 

@@ -88,7 +88,7 @@ class ShowSerializer(serializers.HyperlinkedModelSerializer):
 
         make_query_slow = RawSQL("select pg_sleep(%s)", (0.02, ))
 
-        if "scorsese" in obj.director.all().first().name.lower():
+        if obj.director.all().first() and "scorsese" in obj.director.all().first().name.lower():
             return recursive_something()
 
         # Try to trigger an N+1 performance error:
@@ -98,9 +98,7 @@ class ShowSerializer(serializers.HyperlinkedModelSerializer):
                 show_detail = Show.objects.filter(pk=show.id).annotate(sleep=make_query_slow)[0]
                 print(f"{show_detail.title} ({show_detail.release_year})")
 
-        return f'~~~ {obj.director.all().first().name} ~~~'
+        return f'~~~ {obj.director.all().first()} ~~~'
 
     def get_href(self, obj):
-        import ipdb
-        ipdb.set_trace()
         return reverse_lazy('shows-detail', args=[obj.pk], request=self.context["request"])

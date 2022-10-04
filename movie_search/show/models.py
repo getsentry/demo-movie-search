@@ -6,6 +6,9 @@ class Person(models.Model):
     class Meta:
         ordering = ('name', )
 
+    def __str__(self):
+        return self.name
+
 class Show(models.Model):
     show_type = models.CharField(max_length=200, db_index=True)
     title = models.CharField(max_length=200, db_index=True)
