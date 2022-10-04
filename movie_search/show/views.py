@@ -15,6 +15,29 @@ def index(request):
     bla = 1/0
     return HttpResponse("Hello, world. You're at the SHOW index.")
 
+import asyncio
+from django.http import HttpResponse
+from django.views import View
+
+class ShowAsyncView(View):
+    async def get(self, request, *args, **kwargs):
+        # Perform view logic using await.
+        await asyncio.sleep(0.2)
+
+        async for show in Show.objects.filter(title__startswith="A"):
+            print(f"AAA {show.title} ({show.release_year})")
+            #book = await show.books.afirst()
+
+        async for show in Show.objects.filter(title__startswith="B"):
+            print(f"BBB {show.title} ({show.release_year})")
+            #book = await show.books.afirst()self
+
+        async for show in Show.objects.filter(title__startswith="C"):
+            print(f"CCC {show.title} ({show.release_year})")
+            #book = await show.books.afirst()
+
+        return HttpResponse("Hello async world!")
+
 
 class ShowViewSet(viewsets.ModelViewSet):
     """

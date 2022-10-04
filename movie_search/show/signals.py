@@ -15,7 +15,12 @@ def receive_show_viewed(sender, **kwargs):
     print(f"[SIGNAL] Show viewed by {sender}")
 
 
-def increase_counter(sender, **kwargs):
+def increase_counter_orig(sender, **kwargs):
     time.sleep(0.345)
     print(f"[SIGNAL] Increase counter for {sender}")
 
+
+
+from functools import partial
+
+increase_counter = partial(increase_counter_orig)

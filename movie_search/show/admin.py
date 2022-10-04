@@ -6,7 +6,7 @@ class ShowAdmin(admin.ModelAdmin):
     search_fields = ('title', 'director', 'cast', )
 
     list_display = (
-        'title', 'director', 'countries', 'release_year', 'rating', 'duration', 'show_type'
+        'title', 'countries', 'release_year', 'rating', 'duration', 'show_type'
         )
 
     list_filter = (
