@@ -10,4 +10,7 @@ source .venv/bin/activate
 # Install (or update) requirements
 pip install -r requirements.txt
 
+# Start redis server
+redis-server &
+
 uvicorn main:app --reload

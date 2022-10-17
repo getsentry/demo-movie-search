@@ -3,6 +3,9 @@ import secrets
 
 import redis
 import sentry_sdk
+# from sentry_sdk.integrations.asyncio import AsyncioIntegration
+# from sentry_sdk.integrations.fastapi import FastApiIntegration
+# from sentry_sdk.integrations.starlette import StarletteIntegration
 
 from fastapi import Depends, FastAPI, Form, Request
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
@@ -17,6 +20,11 @@ sentry_sdk.init(
     traces_sample_rate=1.0,
     send_default_pii=True,
     debug=True,
+    integrations=[
+        # AsyncioIntegration(),
+        # StarletteIntegration(transaction_style="endpoint"),
+        # FastApiIntegration(transaction_style="endpoint"),
+    ]
 )
 
 app = FastAPI(debug=True)
@@ -77,7 +85,7 @@ async def members_only(member_id: int, username: str = Depends(_get_current_user
     return {"message": "Hello, you are not invited!"}
 
 
-class CounterMiddleware:
+class MyCustomCounterMiddleware:
     def __init__(self, app):
         self.app = app
 
@@ -89,13 +97,14 @@ class CounterMiddleware:
 
         path = scope.get("path")
 
-        async def count_hits(message):
+        async def count_hits_to_url(message):
             if message["type"] == "http.response.start":
+                # increase counter of url path
                 redis_client = redis.Redis(host='localhost', port=6379)
                 redis_client.incr(path)
 
             await send(message)
 
-        await self.app(scope, receive, count_hits)
+        await self.app(scope, receive, count_hits_to_url)
 
-app.add_middleware(CounterMiddleware)
+app.add_middleware(MyCustomCounterMiddleware)
