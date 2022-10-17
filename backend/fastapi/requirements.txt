@@ -1,15 +1,13 @@
 fastapi
 fastapi-pagination
 uvicorn[standard]
-
 python-multipart  # needed by starlette for form processing
 sqlalchemy  # orm for postgres
 psycopg2  # postgres connection
-
 pillow
 redis
 
--e ../../../sentry-python
-#sentry-sdk==1.9.9
+ipdb  # debugging
 
-ipdb
+-e ../../../sentry-python  # sdk in a sibling folder to this projects folder
+#sentry-sdk  # prodcution sentry SDK

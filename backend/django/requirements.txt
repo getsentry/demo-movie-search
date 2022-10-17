@@ -3,12 +3,10 @@ django-cors-headers==3.13.0
 djangorestframework==3.13.1
 gunicorn==20.1.0
 uvicorn==0.18.3
-
 whitenoise==6.2.0  # serving static files
+psycopg2  # connection to Postgres database
 
 ipdb  # debugging
 
-psycopg2
-
-#sentry_sdk  # prodcution sentry SDK
--e ../sentry-python/  # sdk in a sibling folder to this project
+-e ../../../sentry-python  # sdk in a sibling folder to this projects folder
+#sentry-sdk  # prodcution sentry SDK

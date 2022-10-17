@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # exit on first error
-set -e
+set -xe
 
 # create and activate virtual environment
 python -m venv .venv
@@ -13,6 +13,9 @@ python -m pip install -r requirements.txt
 # run migrations
 ./manage.py migrate
 
-# run development server on localhost:8000
+# Start redis server
+redis-server &
+
+# Run Django application on localhost:8000
 ./manage.py runserver 0.0.0.0:8000
 #gunicorn movie_search.project.asgi:application -k uvicorn.workers.UvicornWorker

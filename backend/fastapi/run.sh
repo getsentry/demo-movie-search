@@ -13,4 +13,5 @@ pip install -r requirements.txt
 # Start redis server
 redis-server &
 
+# Run FastAPI application on localhost:8000
 uvicorn main:app --reload
