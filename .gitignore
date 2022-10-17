@@ -130,3 +130,6 @@ dmypy.json
 
 # static files
 movie_search/static/*
+
+# Redis
+dump.rdb
