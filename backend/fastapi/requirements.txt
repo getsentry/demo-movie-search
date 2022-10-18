@@ -1,11 +1,11 @@
 fastapi
-fastapi-pagination
-uvicorn[standard]
+fastapi-pagination  # rest api pagination
 python-multipart  # needed by starlette for form processing
 sqlalchemy  # orm for postgres
 psycopg2  # postgres connection
-pillow
-redis
+pillow  # image manipulation
+redis  # key value store
+uvicorn[standard]  # application server (ASGI)
 
 ipdb  # debugging
 

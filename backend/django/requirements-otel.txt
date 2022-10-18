@@ -9,5 +9,9 @@ uvicorn  # application server (ASGI)
 
 ipdb  # debugging
 
+# opentelemetry
+opentelemetry-distro
+opentelemetry-instrumentation-django
+
 -e ../../../sentry-python  # sdk in a sibling folder to this projects folder
 #sentry-sdk  # prodcution sentry SDK

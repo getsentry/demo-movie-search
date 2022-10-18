@@ -177,13 +177,13 @@ logging.warn(f"~~~~ sentry_traces_sample_rate: {sentry_traces_sample_rate}")
 logging.warn(f"~~~~ sentry_default_pii: {sentry_default_pii}")
 logging.warn(f"~~~~ sentry_debug: {sentry_debug}")
 
-sentry_sdk.init(
-    dsn=sentry_dsn,
-    release=sentry_release,
-    environment=sentry_environment,
-    traces_sample_rate=sentry_traces_sample_rate,
-    send_default_pii=sentry_default_pii,
-    debug=sentry_debug, 
+# sentry_sdk.init(
+#     dsn=sentry_dsn,
+#     release=sentry_release,
+#     environment=sentry_environment,
+#     traces_sample_rate=sentry_traces_sample_rate,
+#     send_default_pii=sentry_default_pii,
+#     debug=sentry_debug, 
 
-    attach_stacktrace=True,
-)
+#     attach_stacktrace=True,
+# )
