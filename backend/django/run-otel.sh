@@ -11,7 +11,7 @@ source .venv/bin/activate
 python -m pip install -r requirements-otel.txt
 
 # run migrations
-./manage.py migrate
+# ./manage.py migrate
 
 # Start redis server
 redis-server &
@@ -26,4 +26,5 @@ export DJANGO_SETTINGS_MODULE=project.settings
 export OTEL_METRICS_EXPORTER=none
 opentelemetry-instrument \
     --traces_exporter console \
+    --metrics_exporter console \
     python manage.py runserver --noreload

@@ -160,22 +160,23 @@ REST_FRAMEWORK = {
 }
 
 
-# Sentry
-import sentry_sdk
+# Sentry Setup
 
-sentry_dsn = os.getenv("DJANGO_SENTRY_DSN", None)
-sentry_release = os.getenv("DJANGO_SENTRY_RELEASE", None) or "0.0.1"
-sentry_environment = os.getenv("DJANGO_SENTRY_ENVIRONMENT", None) or "dev"
-sentry_traces_sample_rate = float(os.getenv("DJANGO_SENTRY_TRACES_SAMPLE_RATE", None) or "1.0")
-sentry_default_pii = os.getenv("DJANGO_SENTRY_DEFAULT_PII", None) or True
-sentry_debug = os.getenv("DJANGO_SENTRY_DEBUG", None) or True
+# import sentry_sdk
 
-logging.warn(f"~~~~ sentry_dsn: {sentry_dsn}")
-logging.warn(f"~~~~ sentry_release: {sentry_release}")
-logging.warn(f"~~~~ sentry_environment: {sentry_environment}")
-logging.warn(f"~~~~ sentry_traces_sample_rate: {sentry_traces_sample_rate}")
-logging.warn(f"~~~~ sentry_default_pii: {sentry_default_pii}")
-logging.warn(f"~~~~ sentry_debug: {sentry_debug}")
+# sentry_dsn = os.getenv("DJANGO_SENTRY_DSN", None)
+# sentry_release = os.getenv("DJANGO_SENTRY_RELEASE", None) or "0.0.1"
+# sentry_environment = os.getenv("DJANGO_SENTRY_ENVIRONMENT", None) or "dev"
+# sentry_traces_sample_rate = float(os.getenv("DJANGO_SENTRY_TRACES_SAMPLE_RATE", None) or "1.0")
+# sentry_default_pii = os.getenv("DJANGO_SENTRY_DEFAULT_PII", None) or True
+# sentry_debug = os.getenv("DJANGO_SENTRY_DEBUG", None) or True
+
+# logging.warn(f"~~~~ sentry_dsn: {sentry_dsn}")
+# logging.warn(f"~~~~ sentry_release: {sentry_release}")
+# logging.warn(f"~~~~ sentry_environment: {sentry_environment}")
+# logging.warn(f"~~~~ sentry_traces_sample_rate: {sentry_traces_sample_rate}")
+# logging.warn(f"~~~~ sentry_default_pii: {sentry_default_pii}")
+# logging.warn(f"~~~~ sentry_debug: {sentry_debug}")
 
 # sentry_sdk.init(
 #     dsn=sentry_dsn,
@@ -183,7 +184,23 @@ logging.warn(f"~~~~ sentry_debug: {sentry_debug}")
 #     environment=sentry_environment,
 #     traces_sample_rate=sentry_traces_sample_rate,
 #     send_default_pii=sentry_default_pii,
-#     debug=sentry_debug, 
+#     debug=sentry_debug,
 
 #     attach_stacktrace=True,
 # )
+
+
+# OpenTelemetry Setup
+
+from opentelemetry import trace
+from opentelemetry.sdk.trace import SpanProcessor
+
+class SentrySpanProcessor(SpanProcessor):
+    def on_start(self, span, parent_context=None):
+        print(f"~~~~~ in on_start {span}")
+
+    def on_end(self,span):
+        print(f"~~~~~ in on_end {span}")
+
+provider = trace.get_tracer_provider()
+provider.add_span_processor(SentrySpanProcessor())
