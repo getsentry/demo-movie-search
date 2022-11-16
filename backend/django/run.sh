@@ -9,6 +9,7 @@ source .venv/bin/activate
 
 # Install (or update) requirements
 python -m pip install -r requirements.txt
+python -m pip install -r requirements-otel.txt
 
 # run migrations
 ./manage.py migrate

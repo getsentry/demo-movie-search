@@ -11,8 +11,6 @@ def main():
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
 
     # This call is what makes the Django application be instrumented
-    # import ipdb
-    # ipdb.set_trace()
     # DjangoInstrumentor().instrument()
 
     try:

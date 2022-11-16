@@ -162,38 +162,71 @@ REST_FRAMEWORK = {
 
 # Sentry Setup
 
-# import sentry_sdk
+import sentry_sdk
 
-# sentry_dsn = os.getenv("DJANGO_SENTRY_DSN", None)
-# sentry_release = os.getenv("DJANGO_SENTRY_RELEASE", None) or "0.0.1"
-# sentry_environment = os.getenv("DJANGO_SENTRY_ENVIRONMENT", None) or "dev"
-# sentry_traces_sample_rate = float(os.getenv("DJANGO_SENTRY_TRACES_SAMPLE_RATE", None) or "1.0")
-# sentry_default_pii = os.getenv("DJANGO_SENTRY_DEFAULT_PII", None) or True
-# sentry_debug = os.getenv("DJANGO_SENTRY_DEBUG", None) or True
+sentry_dsn = os.getenv("DJANGO_SENTRY_DSN", None)
+sentry_release = os.getenv("DJANGO_SENTRY_RELEASE", None) or "0.0.1"
+sentry_environment = os.getenv("DJANGO_SENTRY_ENVIRONMENT", None) or "dev"
+sentry_traces_sample_rate = float(os.getenv("DJANGO_SENTRY_TRACES_SAMPLE_RATE", None) or "1.0")
+sentry_default_pii = os.getenv("DJANGO_SENTRY_DEFAULT_PII", None) or True
+sentry_debug = os.getenv("DJANGO_SENTRY_DEBUG", None) or True
 
-# logging.warn(f"~~~~ sentry_dsn: {sentry_dsn}")
-# logging.warn(f"~~~~ sentry_release: {sentry_release}")
-# logging.warn(f"~~~~ sentry_environment: {sentry_environment}")
-# logging.warn(f"~~~~ sentry_traces_sample_rate: {sentry_traces_sample_rate}")
-# logging.warn(f"~~~~ sentry_default_pii: {sentry_default_pii}")
-# logging.warn(f"~~~~ sentry_debug: {sentry_debug}")
+logging.warn(f"~~~~ sentry_dsn: {sentry_dsn}")
+logging.warn(f"~~~~ sentry_release: {sentry_release}")
+logging.warn(f"~~~~ sentry_environment: {sentry_environment}")
+logging.warn(f"~~~~ sentry_traces_sample_rate: {sentry_traces_sample_rate}")
+logging.warn(f"~~~~ sentry_default_pii: {sentry_default_pii}")
+logging.warn(f"~~~~ sentry_debug: {sentry_debug}")
 
-# sentry_sdk.init(
-#     dsn=sentry_dsn,
-#     release=sentry_release,
-#     environment=sentry_environment,
-#     traces_sample_rate=sentry_traces_sample_rate,
-#     send_default_pii=sentry_default_pii,
-#     debug=sentry_debug,
-
-#     attach_stacktrace=True,
-# )
+sentry_sdk.init(
+    dsn=sentry_dsn,
+    release=sentry_release,
+    environment=sentry_environment,
+    traces_sample_rate=sentry_traces_sample_rate,
+    send_default_pii=sentry_default_pii,
+    debug=sentry_debug,
+    instrumenter="otel",
+)
 
 
 # OpenTelemetry Setup
 
 from opentelemetry import trace
+from opentelemetry.semconv.trace import SpanAttributes
+from opentelemetry.sdk.trace import TracerProvider
 from sentry_sdk.integrations.opentelemetry import SentrySpanProcessor
+from opentelemetry.sdk.trace.export import (
+    BatchSpanProcessor,
+    ConsoleSpanExporter,
+)
 
-provider = trace.get_tracer_provider()
-provider.add_span_processor(SentrySpanProcessor())
+try:
+    # This works when run with run-otel.sh
+    provider = trace.get_tracer_provider()
+    provider.add_span_processor(SentrySpanProcessor())
+
+except AttributeError:
+    # this works with just running `manage.py runserver`
+    provider = TracerProvider()
+    processor = BatchSpanProcessor(ConsoleSpanExporter(formatter=lambda span: "xXx "))
+    provider.add_span_processor(processor)
+    provider.add_span_processor(SentrySpanProcessor())
+
+# Sets the global default tracer provider
+trace.set_tracer_provider(provider)
+
+# Creates a tracer from the global tracer provider
+tracer = trace.get_tracer(__name__)
+
+with tracer.start_as_current_span("manual-otel-span") as span:
+    span.set_attribute("operation.value", 1)
+    span.set_attribute("operation.name", "Saying hello!")
+    span.set_attribute("operation.other-stuff", [1, 2, 3])
+    span.set_attribute(SpanAttributes.HTTP_METHOD, "GET")
+    span.set_attribute(SpanAttributes.HTTP_URL, "https://opentelemetry.io/")
+
+
+
+from opentelemetry.instrumentation.django import DjangoInstrumentor
+
+DjangoInstrumentor().instrument(is_sql_commentor_enabled=True)
