@@ -17,6 +17,6 @@ python -m pip install -r requirements-otel.txt
 # Start redis server
 redis-server &
 
-# Run Django application on localhost:8000
-./manage.py runserver 0.0.0.0:8000
+# Run Django application on localhost:8090
+./manage.py runserver 0.0.0.0:8090
 #gunicorn movie_search.project.asgi:application -k uvicorn.workers.UvicornWorker

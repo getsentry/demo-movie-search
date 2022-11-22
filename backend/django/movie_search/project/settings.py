@@ -102,7 +102,7 @@ DATABASES = {
         'USER': 'demo_app_django_react',
         'PASSWORD': 'demo_app_django_react',
         'HOST': 'localhost',
-        'PORT': '5432',
+        'PORT': '5433',
     }
 }
 
@@ -200,6 +200,11 @@ from opentelemetry.sdk.trace.export import (
     ConsoleSpanExporter,
 )
 
+
+def _formatter(span):
+    return f"OTEL export '{span.name}' ({span.context.span_id})\n"
+
+
 try:
     # This works when run with run-otel.sh
     provider = trace.get_tracer_provider()
@@ -208,9 +213,17 @@ try:
 except AttributeError:
     # this works with just running `manage.py runserver`
     provider = TracerProvider()
-    processor = BatchSpanProcessor(ConsoleSpanExporter(formatter=lambda span: "xXx "))
+    processor = BatchSpanProcessor(ConsoleSpanExporter(formatter=_formatter))
     provider.add_span_processor(processor)
     provider.add_span_processor(SentrySpanProcessor())
+
+
+# set a custom propagator
+from opentelemetry.propagate import set_global_textmap
+from sentry_sdk.integrations.opentelemetry.propagator import SentryPropagator
+
+set_global_textmap(SentryPropagator())
+
 
 # Sets the global default tracer provider
 trace.set_tracer_provider(provider)
@@ -224,7 +237,9 @@ with tracer.start_as_current_span("manual-otel-span") as span:
     span.set_attribute("operation.other-stuff", [1, 2, 3])
     span.set_attribute(SpanAttributes.HTTP_METHOD, "GET")
     span.set_attribute(SpanAttributes.HTTP_URL, "https://opentelemetry.io/")
-
+    with tracer.start_as_current_span("child-manual-otel-span") as child:
+        child.set_attribute("operation.value", 111)
+        child.set_attribute("operation.name", "Saying CHILD hello!")
 
 
 from opentelemetry.instrumentation.django import DjangoInstrumentor

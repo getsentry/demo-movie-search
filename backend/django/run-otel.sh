@@ -27,4 +27,4 @@ export OTEL_METRICS_EXPORTER=none
 opentelemetry-instrument \
     --traces_exporter console \
     --metrics_exporter console \
-    python manage.py runserver --noreload
+    python manage.py runserver 0.0.0.0:8001 --noreload
