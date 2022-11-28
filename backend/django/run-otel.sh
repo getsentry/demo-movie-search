@@ -22,9 +22,7 @@ cd movie_search
 opentelemetry-bootstrap -a install
 
 # Run Django application on localhost:8000 instrumented by otel
-export DJANGO_SETTINGS_MODULE=project.settings
-export OTEL_METRICS_EXPORTER=none
-opentelemetry-instrument \
+DJANGO_SETTINGS_MODULE=project.settings OTEL_METRICS_EXPORTER=none opentelemetry-instrument \
     --traces_exporter console \
     --metrics_exporter console \
-    python manage.py runserver 0.0.0.0:8001 --noreload
+    python manage.py runserver 0.0.0.0:8090 --noreload
