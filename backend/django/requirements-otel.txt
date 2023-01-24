@@ -5,6 +5,7 @@ whitenoise # serving static files
 psycopg2  # connection to Postgres database
 redis  # key value store
 gunicorn  # application server (WSGI)
+uwsgi  # application server (WSGI)
 uvicorn  # application server (ASGI)
 
 ipdb  # debugging

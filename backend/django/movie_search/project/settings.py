@@ -188,60 +188,93 @@ sentry_sdk.init(
     instrumenter="otel",
 )
 
+# Setup Sentry to catch OpenTelemetry errors and spans
 
-# OpenTelemetry Setup
-
-from opentelemetry import trace
-from opentelemetry.semconv.trace import SpanAttributes
-from opentelemetry.sdk.trace import TracerProvider
+# - span processor
 from sentry_sdk.integrations.opentelemetry import SentrySpanProcessor
+from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import (
-    BatchSpanProcessor,
-    ConsoleSpanExporter,
-)
+     BatchSpanProcessor,
+     ConsoleSpanExporter,
+ )
+from opentelemetry import trace
 
+provider = trace.get_tracer_provider()
 
 def _formatter(span):
     return f"OTEL export '{span.name}' ({span.context.span_id})\n"
 
-
-try:
-    # This works when run with run-otel.sh
-    provider = trace.get_tracer_provider()
-    provider.add_span_processor(SentrySpanProcessor())
-
-except AttributeError:
-    # this works with just running `manage.py runserver`
+# if there is no tracer provider set (a ProxyTracerProvider is returned) create new TracerProvider
+if isinstance(provider, trace.ProxyTracerProvider):
     provider = TracerProvider()
-    processor = BatchSpanProcessor(ConsoleSpanExporter(formatter=_formatter))
+    processor = BatchSpanProcessor(ConsoleSpanExporter())
     provider.add_span_processor(processor)
-    provider.add_span_processor(SentrySpanProcessor())
 
+provider.add_span_processor(SentrySpanProcessor())
 
-# set a custom propagator
-from opentelemetry.propagate import set_global_textmap
+trace.set_tracer_provider(provider)
+
+# - propagator
 from sentry_sdk.integrations.opentelemetry.propagator import SentryPropagator
+from opentelemetry.propagate import set_global_textmap
 
 set_global_textmap(SentryPropagator())
 
 
-# Sets the global default tracer provider
-trace.set_tracer_provider(provider)
 
-# Creates a tracer from the global tracer provider
-tracer = trace.get_tracer(__name__)
+# OpenTelemetry Setup
 
-with tracer.start_as_current_span("manual-otel-span") as span:
-    span.set_attribute("operation.value", 1)
-    span.set_attribute("operation.name", "Saying hello!")
-    span.set_attribute("operation.other-stuff", [1, 2, 3])
-    span.set_attribute(SpanAttributes.HTTP_METHOD, "GET")
-    span.set_attribute(SpanAttributes.HTTP_URL, "https://opentelemetry.io/")
-    with tracer.start_as_current_span("child-manual-otel-span") as child:
-        child.set_attribute("operation.value", 111)
-        child.set_attribute("operation.name", "Saying CHILD hello!")
+# from opentelemetry import trace
+# from opentelemetry.semconv.trace import SpanAttributes
+# from opentelemetry.sdk.trace import TracerProvider
+# from sentry_sdk.integrations.opentelemetry import SentrySpanProcessor
+# from opentelemetry.sdk.trace.export import (
+#     BatchSpanProcessor,
+#     ConsoleSpanExporter,
+# )
 
 
-from opentelemetry.instrumentation.django import DjangoInstrumentor
+# def _formatter(span):
+#     return f"OTEL export '{span.name}' ({span.context.span_id})\n"
 
-DjangoInstrumentor().instrument(is_sql_commentor_enabled=True)
+
+# try:
+#     # This works when run with run-otel.sh
+#     provider = trace.get_tracer_provider()
+#     provider.add_span_processor(SentrySpanProcessor())
+
+# except AttributeError:
+#     # this works with just running `manage.py runserver`
+#     provider = TracerProvider()
+#     processor = BatchSpanProcessor(ConsoleSpanExporter(formatter=_formatter))
+#     provider.add_span_processor(processor)
+#     provider.add_span_processor(SentrySpanProcessor())
+
+
+# # set a custom propagator
+# from opentelemetry.propagate import set_global_textmap
+# from sentry_sdk.integrations.opentelemetry.propagator import SentryPropagator
+
+# set_global_textmap(SentryPropagator())
+
+
+# # Sets the global default tracer provider
+# trace.set_tracer_provider(provider)
+
+# # Creates a tracer from the global tracer provider
+# tracer = trace.get_tracer(__name__)
+
+# with tracer.start_as_current_span("manual-otel-span") as span:
+#     span.set_attribute("operation.value", 1)
+#     span.set_attribute("operation.name", "Saying hello!")
+#     span.set_attribute("operation.other-stuff", [1, 2, 3])
+#     span.set_attribute(SpanAttributes.HTTP_METHOD, "GET")
+#     span.set_attribute(SpanAttributes.HTTP_URL, "https://opentelemetry.io/")
+#     with tracer.start_as_current_span("child-manual-otel-span") as child:
+#         child.set_attribute("operation.value", 111)
+#         child.set_attribute("operation.name", "Saying CHILD hello!")
+
+
+# from opentelemetry.instrumentation.django import DjangoInstrumentor
+
+# DjangoInstrumentor().instrument(is_sql_commentor_enabled=True)
