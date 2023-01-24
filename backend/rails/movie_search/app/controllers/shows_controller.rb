@@ -6,4 +6,8 @@ class ShowsController < ApplicationController
   def show
       @show = Show.find(params[:id])
   end
+
+  def boom
+      raise "Boom!"
+  end
 end
