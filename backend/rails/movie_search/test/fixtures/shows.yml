@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  show_type: MyString
+  title: MyString
+  countries: MyString
+  date_added: 2023-01-24
+  release_year: 1
+  rating: MyString
+  duration: MyString
+  categories: MyString
+  description: MyText
+
+two:
+  show_type: MyString
+  title: MyString
+  countries: MyString
+  date_added: 2023-01-24
+  release_year: 1
+  rating: MyString
+  duration: MyString
+  categories: MyString
+  description: MyText
