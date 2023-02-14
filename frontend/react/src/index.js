@@ -27,15 +27,19 @@ console.log("~~~~ serverSide: ", serverSide)
 
 Sentry.init({
   dsn: sentryDsn,
+  tunnel: "http://localhost:5000/bugs",
   integrations: [
     new BrowserTracing({
       tracingOrigins: ["localhost", /^\//],
       routingInstrumentation: Sentry.reactRouterV6Instrumentation(history),
     }),
+    new Sentry.Replay(),
   ],
   release: sentryRelease,
   environment: sentryEnvironment,
   tracesSampleRate: sentryTracesSampleRate,
+  replaysSessionSampleRate: 1.0,
+  replaysOnErrorSampleRate: 1.0,
   debug: sentryDebug,
 });
 
