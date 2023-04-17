@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "rest_framework",
+    # "django_celery_beat",  # for storing the Celery beat schedule in the django db.
 ]
 
 MIDDLEWARE = [
@@ -102,7 +103,7 @@ DATABASES = {
         'USER': 'demo_app_django_react',
         'PASSWORD': 'demo_app_django_react',
         'HOST': 'localhost',
-        'PORT': '5432',
+        'PORT': '5433',
     }
 }
 
@@ -160,15 +161,37 @@ REST_FRAMEWORK = {
 }
 
 
+# Celery
+from celery.schedules import crontab
+
+CELERY_TIMEZONE = "Europe/London"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+# CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'  # for storing the Celery beat schedule in the django db. (see also show.migrations.0003_setup_scheduled_tasks)
+CELERY_BEAT_SCHEDULE = {  # if the database scheduler is used, this schedule must be commented out.
+    'doing-some-random-stuff-2': {
+        'task': 'show.tasks.random_task',
+        'schedule': 10,
+    },
+    'tell-the-world-something-2': {
+        'task': 'show.tasks.tell_the_world',
+        'schedule': crontab(minute="*"),
+        'args': ("*Something*", ),
+    }
+}
+
+
+
 # Sentry
-import sentry_sdk
 
 sentry_dsn = os.getenv("DJANGO_SENTRY_DSN", None)
 sentry_release = os.getenv("DJANGO_SENTRY_RELEASE", None) or "0.0.1"
 sentry_environment = os.getenv("DJANGO_SENTRY_ENVIRONMENT", None) or "dev"
-sentry_traces_sample_rate = float(os.getenv("DJANGO_SENTRY_TRACES_SAMPLE_RATE", None) or "1.0")
-sentry_default_pii = os.getenv("DJANGO_SENTRY_DEFAULT_PII", None) or True
-sentry_debug = os.getenv("DJANGO_SENTRY_DEBUG", None) or True
+sentry_traces_sample_rate = float(os.getenv("DJANGO_SENTRY_TRACES_SAMPLE_RATE", 0) or "1.0")
+sentry_default_pii = bool(os.getenv("DJANGO_SENTRY_DEFAULT_PII", None) or True)
+sentry_debug = bool(os.getenv("DJANGO_SENTRY_DEBUG", None) or True)
 
 logging.warn(f"~~~~ sentry_dsn: {sentry_dsn}")
 logging.warn(f"~~~~ sentry_release: {sentry_release}")
@@ -177,6 +200,8 @@ logging.warn(f"~~~~ sentry_traces_sample_rate: {sentry_traces_sample_rate}")
 logging.warn(f"~~~~ sentry_default_pii: {sentry_default_pii}")
 logging.warn(f"~~~~ sentry_debug: {sentry_debug}")
 
+import sentry_sdk
+from sentry_sdk.integrations.celery import CeleryIntegration
 sentry_sdk.init(
     dsn=sentry_dsn,
     release=sentry_release,
@@ -184,6 +209,7 @@ sentry_sdk.init(
     traces_sample_rate=sentry_traces_sample_rate,
     send_default_pii=sentry_default_pii,
     debug=sentry_debug, 
+    integrations=[CeleryIntegration(monitor_beat_tasks=True)],
 
     attach_stacktrace=True,
 )
