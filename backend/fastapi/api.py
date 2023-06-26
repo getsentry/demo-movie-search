@@ -20,14 +20,15 @@ def get_db():
 
 
 @router.get("/api/shows/", response_model=Page[schemas.Show])
-def read_shows(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    shows = crud.get_shows(db, skip=skip, limit=limit)
+def read_shows(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), q: str = None):
+    shows = crud.get_shows(db, skip=skip, limit=limit, q=q)
     return paginate(shows)
 
 
 @router.get("/api/shows/{show_id}", response_model=schemas.Show)
 def read_show(show_id: int, db: Session = Depends(get_db)):
     show = crud.get_show(db, show_id=show_id)
+
     if show is None:
         raise HTTPException(status_code=404, detail="Show not found")
     return show

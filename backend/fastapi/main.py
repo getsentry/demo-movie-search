@@ -13,19 +13,16 @@ from fastapi_pagination import add_pagination
 
 import api
 
+sentry_settings = {
+    "dsn": os.getenv("SENTRY_DSN", None),
+    "environment": os.getenv("ENV", "local"),
+    "traces_sample_rate": 1.0,
+    "send_default_pii": True,
+    "debug": True,
+}
+print(f"Sentry Settings: {sentry_settings}")
 
-sentry_sdk.init(
-    dsn=os.getenv("SENTRY_DSN", None),
-    environment=os.getenv("ENV", "local"),
-    traces_sample_rate=1.0,
-    send_default_pii=True,
-    debug=True,
-    integrations=[
-        # AsyncioIntegration(),
-        # StarletteIntegration(transaction_style="endpoint"),
-        # FastApiIntegration(transaction_style="endpoint"),
-    ]
-)
+sentry_sdk.init(**sentry_settings)
 
 app = FastAPI(debug=True)
 app.include_router(api.router)
