@@ -20,7 +20,6 @@ def increase_counter_orig(sender, **kwargs):
     print(f"[SIGNAL] Increase counter for {sender}")
 
 
-
 from functools import partial
 
 increase_counter = partial(increase_counter_orig)

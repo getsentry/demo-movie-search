@@ -5,9 +5,9 @@ from django.db import migrations
 
 
 def setup_scheduled_tasks(apps, schema_editor):
-    CrontabSchedule = apps.get_model('django_celery_beat', 'CrontabSchedule')
-    IntervalSchedule = apps.get_model('django_celery_beat', 'IntervalSchedule')
-    PeriodicTask = apps.get_model('django_celery_beat', 'PeriodicTask')
+    CrontabSchedule = apps.get_model("django_celery_beat", "CrontabSchedule")
+    IntervalSchedule = apps.get_model("django_celery_beat", "IntervalSchedule")
+    PeriodicTask = apps.get_model("django_celery_beat", "PeriodicTask")
 
     schedule, _ = IntervalSchedule.objects.get_or_create(
         every=10,
@@ -15,24 +15,28 @@ def setup_scheduled_tasks(apps, schema_editor):
     )
 
     PeriodicTask.objects.create(
-        interval=schedule,           
-        name='Doing some random stuff',   
-        task='show.tasks.random_task', 
+        interval=schedule,
+        name="Doing some random stuff",
+        task="show.tasks.random_task",
     )
 
     cron_schedule, _ = CrontabSchedule.objects.get_or_create(
-        minute='*',
-        hour='*',
-        day_of_week='*',
-        day_of_month='*',
-        month_of_year='*',
+        minute="*",
+        hour="*",
+        day_of_week="*",
+        day_of_month="*",
+        month_of_year="*",
     )
 
     PeriodicTask.objects.create(
         crontab=cron_schedule,
-        name='Tell the world something',
-        args=json.dumps(['*Something*',]),
-        task='show.tasks.tell_the_world',
+        name="Tell the world something",
+        args=json.dumps(
+            [
+                "*Something*",
+            ]
+        ),
+        task="show.tasks.tell_the_world",
     )
 
 
@@ -43,6 +47,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(setup_scheduled_tasks, reverse_code=migrations.RunPython.noop),
-
+        migrations.RunPython(
+            setup_scheduled_tasks, reverse_code=migrations.RunPython.noop
+        ),
     ]

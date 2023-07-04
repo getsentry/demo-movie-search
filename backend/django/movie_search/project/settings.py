@@ -97,13 +97,13 @@ WSGI_APPLICATION = "project.wsgi.application"
 # }
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'demo_app_django_react',
-        'USER': 'demo_app_django_react',
-        'PASSWORD': 'demo_app_django_react',
-        'HOST': 'localhost',
-        'PORT': '5433',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "demo_app_django_react",
+        "USER": "demo_app_django_react",
+        "PASSWORD": "demo_app_django_react",
+        "HOST": "localhost",
+        "PORT": "5433",
     }
 }
 
@@ -144,9 +144,7 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = "./app-static/"
-STATICFILES_DIRS = (
-    BASE_DIR / "static/",
-)
+STATICFILES_DIRS = (BASE_DIR / "static/",)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -167,21 +165,22 @@ from celery.schedules import crontab
 CELERY_TIMEZONE = "Europe/London"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
 # CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'  # for storing the Celery beat schedule in the django db. (see also show.migrations.0003_setup_scheduled_tasks)
-CELERY_BEAT_SCHEDULE = {  # if the database scheduler is used, this schedule must be commented out.
-    'doing-some-random-stuff-2': {
-        'task': 'show.tasks.random_task',
-        'schedule': 10,
-    },
-    'tell-the-world-something-2': {
-        'task': 'show.tasks.tell_the_world',
-        'schedule': crontab(minute="*"),
-        'args': ("*Something*", ),
+CELERY_BEAT_SCHEDULE = (
+    {  # if the database scheduler is used, this schedule must be commented out.
+        "doing-some-random-stuff-2": {
+            "task": "show.tasks.random_task",
+            "schedule": 10,
+        },
+        "tell-the-world-something-2": {
+            "task": "show.tasks.tell_the_world",
+            "schedule": crontab(minute="*"),
+            "args": ("*Something*",),
+        },
     }
-}
-
+)
 
 
 # Sentry
@@ -189,7 +188,9 @@ CELERY_BEAT_SCHEDULE = {  # if the database scheduler is used, this schedule mus
 sentry_dsn = os.getenv("DJANGO_SENTRY_DSN", None)
 sentry_release = os.getenv("DJANGO_SENTRY_RELEASE", None) or "0.0.1"
 sentry_environment = os.getenv("DJANGO_SENTRY_ENVIRONMENT", None) or "dev"
-sentry_traces_sample_rate = float(os.getenv("DJANGO_SENTRY_TRACES_SAMPLE_RATE", 0) or "1.0")
+sentry_traces_sample_rate = float(
+    os.getenv("DJANGO_SENTRY_TRACES_SAMPLE_RATE", 0) or "1.0"
+)
 sentry_default_pii = bool(os.getenv("DJANGO_SENTRY_DEFAULT_PII", None) or True)
 sentry_debug = bool(os.getenv("DJANGO_SENTRY_DEBUG", None) or True)
 
@@ -202,14 +203,18 @@ logging.warn(f"~~~~ sentry_debug: {sentry_debug}")
 
 import sentry_sdk
 from sentry_sdk.integrations.celery import CeleryIntegration
+from sentry_sdk.integrations.django import DjangoIntegration
+
 sentry_sdk.init(
     dsn=sentry_dsn,
     release=sentry_release,
     environment=sentry_environment,
     traces_sample_rate=sentry_traces_sample_rate,
     send_default_pii=sentry_default_pii,
-    debug=sentry_debug, 
-    integrations=[CeleryIntegration(monitor_beat_tasks=True)],
-
+    debug=sentry_debug,
+    integrations=[
+        CeleryIntegration(monitor_beat_tasks=True),
+        # DjangoIntegration(enable_tracing_meta_tags=False),
+    ],
     attach_stacktrace=True,
 )

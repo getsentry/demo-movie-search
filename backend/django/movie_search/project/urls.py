@@ -21,8 +21,8 @@ from show import views as show_views
 from project import views
 
 router = routers.DefaultRouter()
-router.register(r'shows', show_views.ShowViewSet, basename='shows')
-router.register(r'persons', show_views.PersonViewSet, basename='persons')
+router.register(r"shows", show_views.ShowViewSet, basename="shows")
+router.register(r"persons", show_views.PersonViewSet, basename="persons")
 
 
 def trigger_error(request):
@@ -30,12 +30,11 @@ def trigger_error(request):
 
 
 urlpatterns = [
-    path('', views.root),
-    path('server_side/app/', views.server_side),
-    path('admin/', admin.site.urls),
-    path('show/', include('show.urls')),
-    path('api/', include(router.urls)),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-
-    path('sentry-debug/', trigger_error),
+    path("", views.root),
+    path("server_side/app/", views.server_side),
+    path("admin/", admin.site.urls),
+    path("show/", include("show.urls")),
+    path("api/", include(router.urls)),
+    path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
+    path("sentry-debug/", trigger_error),
 ]

@@ -17,12 +17,13 @@ DURATION = 9
 CATEGORIES = 10
 DESCRIPTION = 11
 
-def load_show_data(apps, schema_editor):
-    Show = apps.get_model('show', 'Show')
-    Person = apps.get_model('show', 'Person')
 
-    with open(settings.DATA_DIR / 'netflix_titles.csv', newline='') as csvfile:
-        pokemon_reader = csv.reader(csvfile, delimiter=',')
+def load_show_data(apps, schema_editor):
+    Show = apps.get_model("show", "Show")
+    Person = apps.get_model("show", "Person")
+
+    with open(settings.DATA_DIR / "netflix_titles.csv", newline="") as csvfile:
+        pokemon_reader = csv.reader(csvfile, delimiter=",")
         next(pokemon_reader)  # skip first row
         for row in pokemon_reader:
             print(f"Show: {row[TITLE][:200]}")
@@ -66,7 +67,7 @@ def load_show_data(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('show', '0001_initial'),
+        ("show", "0001_initial"),
     ]
 
     operations = [

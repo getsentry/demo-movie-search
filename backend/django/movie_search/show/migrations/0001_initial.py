@@ -7,38 +7,61 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Person',
+            name="Person",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(db_index=True, max_length=200, unique=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(db_index=True, max_length=200, unique=True)),
             ],
             options={
-                'ordering': ('name',),
+                "ordering": ("name",),
             },
         ),
         migrations.CreateModel(
-            name='Show',
+            name="Show",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('show_type', models.CharField(db_index=True, max_length=200)),
-                ('title', models.CharField(db_index=True, max_length=200)),
-                ('countries', models.CharField(max_length=200)),
-                ('date_added', models.CharField(max_length=200)),
-                ('release_year', models.SmallIntegerField()),
-                ('rating', models.CharField(max_length=200)),
-                ('duration', models.CharField(max_length=200)),
-                ('categories', models.CharField(max_length=200)),
-                ('description', models.CharField(max_length=200)),
-                ('cast', models.ManyToManyField(related_name='cast_in', to='show.person')),
-                ('director', models.ManyToManyField(related_name='director_in', to='show.person')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("show_type", models.CharField(db_index=True, max_length=200)),
+                ("title", models.CharField(db_index=True, max_length=200)),
+                ("countries", models.CharField(max_length=200)),
+                ("date_added", models.CharField(max_length=200)),
+                ("release_year", models.SmallIntegerField()),
+                ("rating", models.CharField(max_length=200)),
+                ("duration", models.CharField(max_length=200)),
+                ("categories", models.CharField(max_length=200)),
+                ("description", models.CharField(max_length=200)),
+                (
+                    "cast",
+                    models.ManyToManyField(related_name="cast_in", to="show.person"),
+                ),
+                (
+                    "director",
+                    models.ManyToManyField(
+                        related_name="director_in", to="show.person"
+                    ),
+                ),
             ],
             options={
-                'ordering': ('title',),
+                "ordering": ("title",),
             },
         ),
     ]
