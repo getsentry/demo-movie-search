@@ -6,6 +6,7 @@ sqlalchemy  # orm for postgres
 psycopg2  # postgres connection
 pillow
 redis
+jinja2
 
 ipdb  # debugging
 

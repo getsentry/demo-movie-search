@@ -17,8 +17,7 @@ from platform import release
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-DATA_DIR = Path(__file__).resolve().parent.parent.parent / "data"
-
+DATA_DIR = Path(__file__).resolve().parent.parent.parent.parent.parent / "data"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -50,7 +49,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "rest_framework",
-    # "django_celery_beat",  # for storing the Celery beat schedule in the django db.
+    "django_celery_beat",  # for storing the Celery beat schedule in the django db.
 ]
 
 MIDDLEWARE = [
@@ -89,13 +88,7 @@ WSGI_APPLICATION = "project.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
-
+# PostgreSQL (the default)
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
@@ -106,6 +99,26 @@ DATABASES = {
         "PORT": "5433",
     }
 }
+
+# MySQL
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.mysql",
+#         "NAME": "demo_app_django_react",
+#         "USER": "demo_app_django_react",
+#         "PASSWORD": "demo_app_django_react",
+#         "HOST": "localhost",
+#         "PORT": "3306",
+#     }
+# }
+
+# SQLite
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
 
 
 # Password validation
@@ -167,7 +180,7 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 CELERY_BROKER_URL = "redis://localhost:6379/0"
 CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
-# CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'  # for storing the Celery beat schedule in the django db. (see also show.migrations.0003_setup_scheduled_tasks)
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'  # for storing the Celery beat schedule in the django db. (see also show.migrations.0003_setup_scheduled_tasks)
 CELERY_BEAT_SCHEDULE = (
     {  # if the database scheduler is used, this schedule must be commented out.
         "doing-some-random-stuff-2": {
@@ -214,7 +227,14 @@ sentry_sdk.init(
     debug=sentry_debug,
     integrations=[
         CeleryIntegration(monitor_beat_tasks=True),
-        # DjangoIntegration(enable_tracing_meta_tags=False),
+        DjangoIntegration(transaction_style="url"),
     ],
     attach_stacktrace=True,
+    # _experiments={
+    #     "attach_explain_plans": {
+    #         "explain_cache_size": 1000,
+    #         "explain_cache_timeout_seconds": 0,
+    #         "use_explain_analyze": True,
+    #     }
+    # }
 )

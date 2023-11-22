@@ -38,3 +38,5 @@ urlpatterns = [
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("sentry-debug/", trigger_error),
 ]
+
+handler404 = "project.views.page_not_found_view"

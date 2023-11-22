@@ -8,6 +8,7 @@ import sentry_sdk
 # from sentry_sdk.integrations.starlette import StarletteIntegration
 
 from fastapi import Depends, FastAPI, Form, Request
+from fastapi.templating import Jinja2Templates
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi_pagination import add_pagination
 
@@ -19,6 +20,13 @@ sentry_settings = {
     "traces_sample_rate": 1.0,
     "send_default_pii": True,
     "debug": True,
+    "_experiments": {
+        "attach_explain_plans": {
+            "explain_cache_size": 1000,
+            "explain_cache_timeout_seconds": 0,
+            "use_explain_analyze": True,
+        }
+    }
 }
 print(f"Sentry Settings: {sentry_settings}")
 
@@ -29,13 +37,14 @@ app.include_router(api.router)
 
 add_pagination(app)
 
+templates = Jinja2Templates(directory="templates")
 
 @app.get("/")
-async def home():
+async def home(request: Request):
     """
     curl --cookie "REQ_TYPE=home" http://localhost:8000/
     """
-    return {"Hello": "Home World"}
+    return templates.TemplateResponse("root.html", {"request": request, "msg": "Hello Template World!"})
 
 
 @app.get("/debug-sentry")

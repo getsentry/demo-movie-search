@@ -9,7 +9,7 @@ import sentry_sdk
 
 def recursive_something(level=0):
     if level > 100:
-        return 1 / 0
+        return 1 / "a"
 
     return recursive_something(level + 1)
 
@@ -99,6 +99,7 @@ class ShowSerializer(serializers.HyperlinkedModelSerializer):
             obj.director.all().first()
             and "scorsese" in obj.director.all().first().name.lower()
         ):
+            return obj.director.filter(name__contains="Martin Scorsese").first()
             return recursive_something()
 
         # Try to trigger an N+1 performance error:
