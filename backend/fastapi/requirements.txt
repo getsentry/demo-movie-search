@@ -9,6 +9,7 @@ redis
 jinja2
 
 ipdb  # debugging
+locust # load testing
 
 -e ../../../sentry-python  # sdk in a sibling folder to this projects folder
 #sentry-sdk  # prodcution sentry SDK

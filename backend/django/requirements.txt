@@ -11,6 +11,7 @@ django-celery-beat  # store celery beat schedule in db.
 redis
 
 ipdb  # debugging
+locust # load testing
 
 -e ../../../sentry-python  # sdk in a sibling folder to this projects folder
 #sentry-sdk  # prodcution sentry SDK
