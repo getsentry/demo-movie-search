@@ -229,6 +229,8 @@ sentry_sdk.init(
         CeleryIntegration(monitor_beat_tasks=True),
         DjangoIntegration(transaction_style="url"),
     ],
+    enable_db_query_source=True,
+    db_query_source_threshold_ms=0,
     attach_stacktrace=True,
     # _experiments={
     #     "attach_explain_plans": {
