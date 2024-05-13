@@ -1,6 +1,7 @@
 Django==4.2.6
 django-cors-headers==4.1.0
 djangorestframework==3.14.0
+drf-extensions  # adds caching to DRF
 gunicorn==20.1.0
 uvicorn==0.18.3
 whitenoise==6.2.0  # serving static files

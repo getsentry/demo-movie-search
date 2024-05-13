@@ -120,6 +120,21 @@ DATABASES = {
 #     }
 # }
 
+# Caches
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379",
+    }
+}
+
+CACHE_MIDDLEWARE_SECONDS = 10
+
+REST_FRAMEWORK_EXTENSIONS = {
+    'DEFAULT_CACHE_RESPONSE_TIMEOUT': 10
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -227,7 +242,7 @@ sentry_sdk.init(
     debug=sentry_debug,
     integrations=[
         CeleryIntegration(monitor_beat_tasks=True),
-        DjangoIntegration(transaction_style="url"),
+        DjangoIntegration(transaction_style="url", cache_spans=True),
     ],
     enable_db_query_source=True,
     db_query_source_threshold_ms=0,

@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from rest_framework import viewsets
 from rest_framework.response import Response
+from rest_framework_extensions.cache.mixins import CacheResponseMixin
+from rest_framework_extensions.cache.decorators import cache_response
 
 from show.models import Show, Person
 from show.serializers import ShowListSerializer, ShowSerializer, PersonSerializer
@@ -40,7 +42,7 @@ class ShowAsyncView(View):
         return HttpResponse("Hello async world!")
 
 
-class PersonViewSet(viewsets.ModelViewSet):
+class PersonViewSet(CacheResponseMixin, viewsets.ModelViewSet):
     """
     API endpoint that allows persons to be viewed or edited.
     """
@@ -61,7 +63,7 @@ class PersonViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-class ShowViewSet(viewsets.ModelViewSet):
+class ShowViewSet(CacheResponseMixin, viewsets.ModelViewSet):
     """
     API endpoint that allows shows to be viewed or edited.
     """
@@ -90,6 +92,7 @@ class ShowViewSet(viewsets.ModelViewSet):
 
         return queryset
 
+    @cache_response()
     def retrieve(self, request, *args, **kwargs):
         """
         Return a list of all users.
