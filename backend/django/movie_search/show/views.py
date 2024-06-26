@@ -95,7 +95,7 @@ class ShowViewSet(CacheResponseMixin, viewsets.ModelViewSet):
     @cache_response()
     def retrieve(self, request, *args, **kwargs):
         """
-        Return a list of all users.
+        Return a list of all shows.
         """
         show = self.get_object()
         serializer = ShowSerializer(show, context={"request": self.request})

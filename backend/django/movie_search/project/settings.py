@@ -214,13 +214,11 @@ CELERY_BEAT_SCHEDULE = (
 # Sentry
 
 sentry_dsn = os.getenv("DJANGO_SENTRY_DSN", None)
-sentry_release = os.getenv("DJANGO_SENTRY_RELEASE", None) or "0.0.1"
-sentry_environment = os.getenv("DJANGO_SENTRY_ENVIRONMENT", None) or "dev"
-sentry_traces_sample_rate = float(
-    os.getenv("DJANGO_SENTRY_TRACES_SAMPLE_RATE", 0) or "1.0"
-)
-sentry_default_pii = bool(os.getenv("DJANGO_SENTRY_DEFAULT_PII", None) or True)
-sentry_debug = bool(os.getenv("DJANGO_SENTRY_DEBUG", None) or True)
+sentry_release = os.getenv("DJANGO_SENTRY_RELEASE", "0.0.1")
+sentry_environment = os.getenv("DJANGO_SENTRY_ENVIRONMENT", "dev")
+sentry_traces_sample_rate = float(os.getenv("DJANGO_SENTRY_TRACES_SAMPLE_RATE", "1.0"))
+sentry_default_pii = os.getenv("DJANGO_SENTRY_DEFAULT_PII", 'True') == 'True'
+sentry_debug = os.getenv("DJANGO_SENTRY_DEBUG", 'True') == 'True'
 
 logging.warn(f"~~~~ sentry_dsn: {sentry_dsn}")
 logging.warn(f"~~~~ sentry_release: {sentry_release}")
@@ -240,10 +238,17 @@ sentry_sdk.init(
     traces_sample_rate=sentry_traces_sample_rate,
     send_default_pii=sentry_default_pii,
     debug=sentry_debug,
-    integrations=[
-        CeleryIntegration(monitor_beat_tasks=True),
-        DjangoIntegration(transaction_style="url", cache_spans=True),
-    ],
+    # integrations=[
+    #     CeleryIntegration(
+    #         monitor_beat_tasks=True, 
+    #     ),
+    #     DjangoIntegration(
+    #         transaction_style="url", 
+    #         cache_spans=True, 
+    #         signals_spans=True,
+    #         middleware_spans=True,
+    #     ),
+    # ],
     enable_db_query_source=True,
     db_query_source_threshold_ms=0,
     attach_stacktrace=True,
