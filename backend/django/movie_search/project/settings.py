@@ -195,16 +195,16 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 CELERY_BROKER_URL = "redis://localhost:6379/0"
 CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
-CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'  # for storing the Celery beat schedule in the django db. (see also show.migrations.0003_setup_scheduled_tasks)
+# CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'  # for storing the Celery beat schedule in the django db. (see also show.migrations.0003_setup_scheduled_tasks)
 CELERY_BEAT_SCHEDULE = (
     {  # if the database scheduler is used, this schedule must be commented out.
         "doing-some-random-stuff-2": {
             "task": "show.tasks.random_task",
-            "schedule": 10,
+            "schedule": 3600,
         },
         "tell-the-world-something-2": {
             "task": "show.tasks.tell_the_world",
-            "schedule": crontab(minute="*"),
+            "schedule": crontab(hour="1"),
             "args": ("*Something*",),
         },
     }
@@ -249,9 +249,9 @@ sentry_sdk.init(
     #         middleware_spans=True,
     #     ),
     # ],
-    enable_db_query_source=True,
-    db_query_source_threshold_ms=0,
-    attach_stacktrace=True,
+    # enable_db_query_source=True,
+    # db_query_source_threshold_ms=0,
+    # attach_stacktrace=True,
     # _experiments={
     #     "attach_explain_plans": {
     #         "explain_cache_size": 1000,

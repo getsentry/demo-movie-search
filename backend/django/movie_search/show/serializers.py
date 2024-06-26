@@ -1,5 +1,6 @@
 from show.models import Person
 from show.models import Show
+from show.tasks import trigger_notifications
 from rest_framework import serializers
 from rest_framework.reverse import reverse_lazy
 from django.db.models.expressions import RawSQL
@@ -81,6 +82,8 @@ class ShowSerializer(serializers.HyperlinkedModelSerializer):
         ]
 
     def get_director_special(self, obj):
+
+        trigger_notifications.delay(obj.pk)
 
         # Add more information to Sentry events.
         from django.conf import settings

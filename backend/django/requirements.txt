@@ -1,15 +1,18 @@
-Django==4.2.6
-django-cors-headers==4.1.0
-djangorestframework==3.14.0
+Django
+
+django-cors-headers
+djangorestframework
+
 drf-extensions  # adds caching to DRF
-gunicorn==20.1.0
-uvicorn==0.18.3
-whitenoise==6.2.0  # serving static files
+whitenoise  # serving static files
 psycopg  # connection to Postgres database
 
-celery
+celery  # async tasks
 django-celery-beat  # store celery beat schedule in db.
-redis
+redis  # message broker for celery
+
+gunicorn  # application server sync
+uvicorn  # application server async
 
 ipdb  # debugging
 locust # load testing
