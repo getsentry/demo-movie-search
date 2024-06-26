@@ -26,8 +26,8 @@ DATA_DIR = Path(__file__).resolve().parent.parent.parent.parent.parent / "data"
 SECRET_KEY = "django-insecure-ny_%o6*o(npqht@9oc%2hsxz6upvlwir)cuys5-)-at!7gfibw"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if os.getenv("DJANGO_DEBUG", "True") == "True" else False
-
+# DEBUG = True if os.getenv("DJANGO_DEBUG", "True") == "True" else False
+DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -238,6 +238,9 @@ sentry_sdk.init(
     traces_sample_rate=sentry_traces_sample_rate,
     send_default_pii=sentry_default_pii,
     debug=sentry_debug,
+    _experiments={
+        "otel_powered_performance": True,
+    },
     # integrations=[
     #     CeleryIntegration(
     #         monitor_beat_tasks=True, 

@@ -17,9 +17,10 @@ rm -rf dump.rdb
 redis-server --daemonize yes
 
 # run migrations
-./manage.py migrate
+DEBUG=True ./manage.py migrate
 
 # Run Django application on localhost:8000
-./manage.py runserver 0.0.0.0:8000
+./manage.py runserver 0.0.0.0:8000 --noreload
+# DEBUG=True opentelemetry-instrument python ./manage.py runserver 0.0.0.0:8000 --noreload
 # cd movie_search && gunicorn project.asgi:application -k uvicorn.workers.UvicornWorker && cd -
 # cd movie_search && mprof run --multiprocess --output "./mprofile_$(date +%Y%m%d%H%M%S).dat" gunicorn project.wsgi:application && cd -
