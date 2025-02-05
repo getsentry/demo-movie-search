@@ -17,7 +17,7 @@ rm -rf dump.rdb
 redis-server --daemonize yes
 
 # run migrations
-DEBUG=True ./manage.py migrate
+DEBUG=True ./manage.py migrate --no-input && ./manage.py initadmin
 
 # Run Django application on localhost:8000
 ./manage.py runserver 0.0.0.0:8000 --noreload

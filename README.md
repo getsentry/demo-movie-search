@@ -2,12 +2,6 @@
 
 This is a sample application that represents a movie and tv-shows search engine.
 
-## Prerequisites
-
-This demo assumes that there is a Postgres server running on localhost port 5432.
-Further it assumes a database called `demo_app_django_react` accessible by a user
-called `demo_app_django_react` identified by the password `demo_app_django_react`.
-
 ## Running
 
 To run this project just run `docker compose up --build`

@@ -1,42 +1,69 @@
 import * as Sentry from "@sentry/react";
-import { BrowserTracing } from "@sentry/tracing";
+import React from "react";
 import ReactDOM from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {
+  createRoutesFromChildren,
+  matchRoutes,
+  useLocation,
+  useNavigationType,
+  BrowserRouter,
+  Route,
+  Routes,
+} from "react-router-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import Show from "./Show";
 import Shows from "./Shows";
-import { createBrowserHistory } from "history";
 
-const history = createBrowserHistory();
+const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
 
+const sentrySpotlight = process.env.SENTRY_SPOTLIGHT || true;
 const sentryDsn = process.env.REACT_APP_SENTRY_DSN;
-const sentryRelease = process.env.REACT_APP_SENTRY_RELEASE || '0.0.1';
-const sentryEnvironment = process.env.REACT_APP_SENTRY_ENVIRONMENT || 'dev';
-const sentryTracesSampleRate = parseFloat(process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE || "1.0");
+const sentryRelease = process.env.REACT_APP_SENTRY_RELEASE || "0.0.1";
+const sentryEnvironment = process.env.REACT_APP_SENTRY_ENVIRONMENT || "dev";
+const sentryTracesSampleRate = Number.parseFloat(
+  process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE || "1.0"
+);
 const sentryDebug = process.env.REACT_APP_SENTRY_DEBUG_FRONTEND || true;
 const serverSide = process.env.REACT_APP_SERVER_SIDE || false;
 
-console.log("~~~~ sentryDsn: ", sentryDsn)
-console.log("~~~~ sentryRelease: ", sentryRelease)
-console.log("~~~~ sentryEnvironment: ", sentryEnvironment)
-console.log("~~~~ sentryTracesSampleRate: ", sentryTracesSampleRate)
-console.log("~~~~ sentryDebug: ", sentryDebug)
-console.log("~~~~ serverSide: ", serverSide)
+console.log("~~~~ sentrySpotlight: ", sentrySpotlight);
+console.log("~~~~ sentryDsn: ", sentryDsn);
+console.log("~~~~ sentryRelease: ", sentryRelease);
+console.log("~~~~ sentryEnvironment: ", sentryEnvironment);
+console.log("~~~~ sentryTracesSampleRate: ", sentryTracesSampleRate);
+console.log("~~~~ sentryDebug: ", sentryDebug);
+console.log("~~~~ serverSide: ", serverSide);
+
+const integrations = [
+  Sentry.reactRouterV6BrowserTracingIntegration({
+    useEffect: React.useEffect,
+    useLocation,
+    useNavigationType,
+    createRoutesFromChildren,
+    matchRoutes,
+  }),
+];
+
+if (sentrySpotlight) {
+  const sidecarUrl =
+    typeof sentrySpotlight === "string" ? sentrySpotlight : undefined;
+  integrations.push(
+    Sentry.spotlightBrowserIntegration({
+      sidecarUrl,
+    })
+  );
+}
 
 Sentry.init({
   dsn: sentryDsn,
-  integrations: [
-    new BrowserTracing({
-      tracingOrigins: ["localhost", /^\//],
-      routingInstrumentation: Sentry.reactRouterV6Instrumentation(history),
-    }),
-  ],
+  integrations,
   release: sentryRelease,
   environment: sentryEnvironment,
   tracesSampleRate: sentryTracesSampleRate,
   debug: sentryDebug,
+  tracePropagationTargets: ["localhost", /^\//],
 });
 
 // Just a random new user, each time the page is reloaded
@@ -56,10 +83,10 @@ root.render(
   <QueryClientProvider client={queryClient}>
     <div className="container mx-auto p-4">
       <BrowserRouter basename={`${serverSide ? "/server_side" : "/"}`}>
-        <Routes>
+        <SentryRoutes>
           <Route path="/app" element={<Shows />} />
           <Route path="/app/shows/:showId" element={<Show />} />
-        </Routes>
+        </SentryRoutes>
       </BrowserRouter>
     </div>
   </QueryClientProvider>

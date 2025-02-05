@@ -1,29 +1,52 @@
-version: "3.7"
-
 services:
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - "redis-data:/data"
+  postgres:
+    image: postgres:17
+    volumes:
+      - "postgres-data:/var/lib/postgresql/data"
+    environment:
+      POSTGRES_USER: demo_app_django_react
+      POSTGRES_PASSWORD: demo_app_django_react
   django:
     image: django_backend:v0
     restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - postgres
+      - redis
     build:
       context: .
-      args:
-        DJANGO_DEBUG: "True"
-        DJANGO_SENTRY_DSN: $DJANGO_SENTRY_DSN
-        DJANGO_SENTRY_RELEASE: $DJANGO_SENTRY_RELEASE
-        DJANGO_SENTRY_ENVIRONMENT: $DJANGO_SENTRY_ENVIRONMENT
-        DJANGO_SENTRY_TRACES_SAMPLE_RATE: $DJANGO_SENTRY_TRACES_SAMPLE_RATE
+    environment:
+        SENTRY_SPOTLIGHT: ${SENTRY_SPOTLIGHT:-http://host.docker.internal:8969/stream}
+        DJANGO_DEBUG: ${DJANGO_DEBUG:-True}
+        DJANGO_SENTRY_DSN:
+        DJANGO_SENTRY_RELEASE:
+        DJANGO_SENTRY_ENVIRONMENT:
+        DJANGO_SENTRY_TRACES_SAMPLE_RATE:
+        POSTGRES_HOST: postgres
+        REDIS_HOST: redis
     ports:
       - "8000:8000"
 
   react:
     image: react_frontend:v0
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
-      - REACT_APP_SENTRY_DSN=${REACT_APP_SENTRY_DSN}
-      - REACT_APP_SENTRY_RELEASE=${REACT_APP_SENTRY_RELEASE}
-      - REACT_APP_SENTRY_ENVIRONMENT=${REACT_APP_SENTRY_ENVIRONMENT}
-      - REACT_APP_SENTRY_TRACES_SAMPLE_RATE=${REACT_APP_SENTRY_TRACES_SAMPLE_RATE}
+      SENTRY_SPOTLIGHT: ${SENTRY_SPOTLIGHT:-http://localhost:8969/stream}
+      REACT_APP_SENTRY_DSN:
+      REACT_APP_SENTRY_RELEASE:
+      REACT_APP_SENTRY_ENVIRONMENT:
+      REACT_APP_SENTRY_TRACES_SAMPLE_RATE:
     restart: unless-stopped
     build:
-      context: ./app/
+      context: ./frontend/react/
     ports:
       - "3000:3000"
+volumes:
+  postgres-data:
+  redis-data:

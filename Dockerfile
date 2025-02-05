@@ -9,34 +9,17 @@ FROM python:3
 # docker run --rm -p 8000:8000 -it -e DJANGO_SENTRY_DSN=https://1@o1.ingest.sentry.io/1 -e DJANGO_SENTRY_TRACES_SAMPLE_RATE=0.1 django_backend:v0
 #
 
-ARG DJANGO_SENTRY_DSN
-ENV DJANGO_SENTRY_DSN=$DJANGO_SENTRY_DSN
-
-ARG DJANGO_SENTRY_RELEASE
-ENV DJANGO_SENTRY_RELEASE=$DJANGO_SENTRY_RELEASE
-
-ARG DJANGO_SENTRY_ENVIRONMENT
-ENV DJANGO_SENTRY_ENVIRONMENT=$DJANGO_SENTRY_ENVIRONMENT
-
-ARG DJANGO_SENTRY_TRACES_SAMPLE_RATE=1.0
-ENV DJANGO_SENTRY_TRACES_SAMPLE_RATE=$DJANGO_SENTRY_TRACES_SAMPLE_RATE
-
-ARG DJANGO_DEBUG=False
-ENV DJANGO_DEBUG=$DJANGO_DEBUG
-
 WORKDIR /app
 
-COPY requirements.txt ./
+COPY backend/django/requirements.txt ./
 
 RUN pip install -U pip && pip install -r requirements.txt
 
-COPY movie_search/ .
+COPY backend/django/movie_search .
 COPY data/netflix_titles.csv /data/
-COPY docker-entrypoint.sh docker-entrypoint.sh
+COPY backend/django/docker-entrypoint.sh docker-entrypoint.sh
 
-RUN python ./manage.py collectstatic --clear --no-input && python ./manage.py migrate --no-input && python ./manage.py initadmin
-
-EXPOSE 8000
+RUN python ./manage.py collectstatic --clear --no-input
 
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
 
