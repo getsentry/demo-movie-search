@@ -106,7 +106,9 @@ class MyCustomCounterMiddleware:
         async def count_hits_to_url(message):
             if message["type"] == "http.response.start":
                 # increase counter of url path
-                redis_client = redis.Redis(host='localhost', port=6379)
+                redis_client = redis.Redis(
+                    host=os.environ.get("REDIS_HOST", "localhost"), port=6379
+                )
                 redis_client.incr(path)
 
             await send(message)

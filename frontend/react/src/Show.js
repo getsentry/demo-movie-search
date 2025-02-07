@@ -27,7 +27,7 @@ function App() {
       {Object.keys(data.data).map((key) => (
         <p key={key} className="mb-2">
           <span className="font-medium">{key}</span>:{" "}
-          <span>{data.data[key]}</span>
+          <span>{JSON.stringify(data.data[key])}</span>
         </p>
       ))}
     </div>

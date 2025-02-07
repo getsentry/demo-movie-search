@@ -95,8 +95,8 @@ DATABASES = {
         "NAME": "demo_app_django_react",
         "USER": "demo_app_django_react",
         "PASSWORD": "demo_app_django_react",
-        "HOST": "localhost",
-        "PORT": "5433",
+        "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
+        "PORT": "5432",
     }
 }
 
@@ -125,7 +125,7 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379",
+        "LOCATION": f"redis://{os.environ.get('REDIS_HOST', '127.0.0.1')}:6379",
     }
 }
 
@@ -193,8 +193,8 @@ from celery.schedules import crontab
 CELERY_TIMEZONE = "Europe/London"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
-CELERY_BROKER_URL = "redis://localhost:6379/0"
-CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+CELERY_BROKER_URL = f"redis://{os.environ.get('REDIS_HOST', 'localhost')}:6379/0"
+CELERY_RESULT_BACKEND = f"redis://{os.environ.get('REDIS_HOST', 'localhost')}:6379/0"
 # CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'  # for storing the Celery beat schedule in the django db. (see also show.migrations.0003_setup_scheduled_tasks)
 CELERY_BEAT_SCHEDULE = (
     {  # if the database scheduler is used, this schedule must be commented out.
@@ -243,11 +243,11 @@ sentry_sdk.init(
     },
     # integrations=[
     #     CeleryIntegration(
-    #         monitor_beat_tasks=True, 
+    #         monitor_beat_tasks=True,
     #     ),
     #     DjangoIntegration(
-    #         transaction_style="url", 
-    #         cache_spans=True, 
+    #         transaction_style="url",
+    #         cache_spans=True,
     #         signals_spans=True,
     #         middleware_spans=True,
     #     ),

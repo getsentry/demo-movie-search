@@ -10,19 +10,16 @@ FROM node
 
 WORKDIR /app
 
-COPY package*.json .
-
+COPY package.json yarn.lock ./
 # Make sure react docker container can connect to django docker container
 # see also docker-compose.yml
 RUN sed -i -e 's/localhost/django/g' package.json
+
+RUN yarn
 
 COPY public/ ./public/
 COPY src/ ./src/
 COPY postcss.config.js .
 COPY tailwind.config.js .
-
-RUN yarn
-
-EXPOSE 3000
 
 CMD ["yarn", "start"]

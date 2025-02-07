@@ -10,7 +10,7 @@ def main():
     sys.path.insert(0, root)
     os.chdir(root)
 
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project.settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "movie_search.project.settings")
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
