@@ -220,12 +220,12 @@ sentry_traces_sample_rate = float(os.getenv("DJANGO_SENTRY_TRACES_SAMPLE_RATE", 
 sentry_default_pii = os.getenv("DJANGO_SENTRY_DEFAULT_PII", 'True') == 'True'
 sentry_debug = os.getenv("DJANGO_SENTRY_DEBUG", 'True') == 'True'
 
-logging.warn(f"~~~~ sentry_dsn: {sentry_dsn}")
-logging.warn(f"~~~~ sentry_release: {sentry_release}")
-logging.warn(f"~~~~ sentry_environment: {sentry_environment}")
-logging.warn(f"~~~~ sentry_traces_sample_rate: {sentry_traces_sample_rate}")
-logging.warn(f"~~~~ sentry_default_pii: {sentry_default_pii}")
-logging.warn(f"~~~~ sentry_debug: {sentry_debug}")
+logging.warning(f"~~~~ sentry_dsn: {sentry_dsn}")
+logging.warning(f"~~~~ sentry_release: {sentry_release}")
+logging.warning(f"~~~~ sentry_environment: {sentry_environment}")
+logging.warning(f"~~~~ sentry_traces_sample_rate: {sentry_traces_sample_rate}")
+logging.warning(f"~~~~ sentry_default_pii: {sentry_default_pii}")
+logging.warning(f"~~~~ sentry_debug: {sentry_debug}")
 
 import sentry_sdk
 from sentry_sdk.integrations.celery import CeleryIntegration
