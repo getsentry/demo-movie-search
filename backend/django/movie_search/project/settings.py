@@ -238,9 +238,6 @@ sentry_sdk.init(
     traces_sample_rate=sentry_traces_sample_rate,
     send_default_pii=sentry_default_pii,
     debug=sentry_debug,
-    _experiments={
-        "otel_powered_performance": True,
-    },
     # integrations=[
     #     CeleryIntegration(
     #         monitor_beat_tasks=True,
