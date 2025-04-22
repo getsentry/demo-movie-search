@@ -20,4 +20,4 @@ memory_profiler  # memory profiling
 matplotlib  # plotting the memory profile
 
 # -e ../../../sentry-python  # sdk in a sibling folder to this projects folder
-sentry-sdk[opentelemetry-experimental]  # prodcution sentry SDK
+sentry-sdk  # production
